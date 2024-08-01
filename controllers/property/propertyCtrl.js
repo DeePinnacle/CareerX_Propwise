@@ -184,6 +184,14 @@ const handleBuyProps = async(req, res)=>{
             const updatePropStatus = await propsModel.findByIdAndUpdate(propsID, {
                 prop_status: "sold"
             }, { new: true })
+
+            if(!update_balance){
+                return res.status(400).json({ message: "Error updating user balance." })
+            }
+
+            if(!updatePropStatus){
+                return res.status(400).json({ message: "Error updating props status" })
+            }
     
             return res.status(200).json({ message: "Successful", propsTransaction })
         }
