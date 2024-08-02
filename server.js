@@ -28,6 +28,17 @@ app.listen(process.env.PORT, ()=>{
     console.log(`server running and listening to ${ PORT }`)
 })
 
+// home page
+app.get ("/", (req, res)=>{
+    return res.status({ message: "Welcome to propwise API", 
+        APIs: { 
+            userAPI: "/propwise/user/api", 
+            AdminAPI: "/propwise/admin/api",
+            propetyAPI: "/propwise/property/api",
+            walletAPI: "/propwise/wallet/api",
+            transactionAPI: "propwise/transactions/api"
+        } })
+})
 
 app.use("/propwise/user/api", UserRouter)
 app.use("/propwise/admin/api", adminRouter)
