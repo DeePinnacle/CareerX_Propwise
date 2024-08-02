@@ -30,7 +30,7 @@ app.listen(process.env.PORT, ()=>{
 
 // home page
 app.get ("/", (req, res)=>{
-    return res.status({ message: "Welcome to propwise API", 
+    return res.status(200).json({ message: "Welcome to propwise API", 
         APIs: { 
             userAPI: "/propwise/user/api", 
             AdminAPI: "/propwise/admin/api",
