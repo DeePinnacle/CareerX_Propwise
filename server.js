@@ -1,5 +1,6 @@
 const express = require ("express")
 const cors = require("cors")
+const HomeRouter = require("./routes/home/routes")
 const UserRouter = require("./routes/user/routes")
 const adminRouter = require("./routes/admin/routes")
 const propRouter = require('./routes/property/routes')
@@ -29,17 +30,9 @@ app.listen(process.env.PORT, ()=>{
 })
 
 // home page
-app.get ("/", (req, res)=>{
-    return res.status(200).json({ message: "Welcome to propwise API", 
-        APIs: { 
-            userAPI: "/propwise/user/api", 
-            AdminAPI: "/propwise/admin/api",
-            propetyAPI: "/propwise/property/api",
-            walletAPI: "/propwise/wallet/api",
-            transactionAPI: "propwise/transactions/api"
-        } })
-})
+app.use("/", HomeRouter)
 
+// APIs
 app.use("/propwise/user/api", UserRouter)
 app.use("/propwise/admin/api", adminRouter)
 app.use("/propwise/property/api", propRouter)
