@@ -10,7 +10,9 @@ const {
     handleReactivateAcct,
     handleDeleteAccount,
     handleUserDetails,
-    handleLogout
+    handleLogout,
+    handleAllPropsTransaction,
+    handleInstallmentalTransaction
  } = require("../../controllers/user/users")
 const { 
     regAuthentication,
@@ -18,8 +20,9 @@ const {
  } = require("../../middlewares/authentication")
 const { Authorization } = require("../../middlewares/authorization")
 
-const Router = express.Router()
+const profileUpload = require('../../middlewares/profileUpload')
 
+const Router = express.Router()
 
 Router.post("/register", regAuthentication, handleRegistration)
 
@@ -29,11 +32,15 @@ Router.post("/login", loginAuthentication, handleLogin )
 
 Router.get("/user-details", Authorization, handleUserDetails)
 
+Router.get('/transaction/full-payment', Authorization, handleAllPropsTransaction)
+
+Router.get('/transaction/installmental-payment', Authorization, handleInstallmentalTransaction)
+
 Router.post("/forgot-password", handleForgotPassword)
 
 Router.patch("/reset-password/:token", handleResetPassword)
 
-Router.patch("/edit-records", Authorization, handleEditRecords)
+Router.patch("/edit-records", Authorization, profileUpload.single('profile_pics'), handleEditRecords)
 
 Router.patch("/deactivate-account", Authorization, handleDeactivateAcct)
 

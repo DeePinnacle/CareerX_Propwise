@@ -24,6 +24,9 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    profile_pics: {
+        type: String
+    },
     account_number: {
         type: Number,
         required: true,

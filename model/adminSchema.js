@@ -17,6 +17,14 @@ const adminSchema = new Schema({
         type: String,
         required: true
     },
+    account_number: {
+        type: Number,
+        default: 1234567890
+    },
+    account_balance: {
+        type: Number,
+        default: 0
+    },
     role: {
         type: String,
         default: "admin"

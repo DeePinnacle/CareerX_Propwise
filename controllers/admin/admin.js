@@ -13,7 +13,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { default: mongoose } = require('mongoose')
 const {
-    propertyTransactionModel
+    propertyTransactionModel,
+    InstallmentalModel
 } = require("../../model/propsTransactionSchema")
 
 const {
@@ -32,6 +33,7 @@ const adminDashboard = async(req, res)=>{
         const user = await userModel.find()
         const properties = await propsModel.find()
         const propsTransaction = await propertyTransactionModel.find()
+        const installmentalTransaction = await InstallmentalModel.find()
 
         // total purchase approved
         const approvedProps = await propertyTransactionModel.find({ status: "approved" })
@@ -43,15 +45,25 @@ const adminDashboard = async(req, res)=>{
 
         const pendingRequest = await propertyTransactionModel.find({ status: "pending" })
 
+        if(admin.account_balance < 0){
+            // set account to 0
+            const setAccountToZero = await adminModel.findByIdAndUpdate(id,{
+                account_balance: 0
+            }, { new: true })
+            return setAccountToZero
+        }
+
         const dashboard = {
             RegisteredUsers: user.length,
+            account_balance: admin.account_balance,
             TotalPropsPosted: properties.length,
             propsTransaction: propsTransaction.length,
+            installmentalTransaction: installmentalTransaction.length,
             approvedProps: approvedProps.length,
             cancelledProps: cancelledProps.length,
             pendingRequest: pendingRequest.length
         }
-        return res.status(200).json({ message: "Dashboard queried successfully", dashboard })
+        return res.status(200).json({ message: "Dashboard queried successfully", dashboard, admin })
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
@@ -194,18 +206,32 @@ const handleAddProperty = async(req, res) =>{
             prop_status, 
             prop_type,
             features,
-            image,
-            images,
             bedrooms,
             bathrooms,
             year_built
         } = req.body
         const { id } = req.admin
 
+        let { images } = req.files;
+        
+        if (req.files) {
+            let filename = "";
+      
+            for (let image of images) {
+              filename += `${image.filename} ${","}`;
+            }
+            filename = filename.substring(0, filename.lastIndexOf(","));
+            images = filename;
+            console.log(images);
+            
+          }else {
+            return res.status(400).json({ message: "No image file selected" })
+          }
+          console.log(images)
+
         if(!id){
             return res.status(400).json({ message: 'Access denied' })
         }
-
         const property = new propsModel({
             brokered_by: id,
             title,
@@ -214,7 +240,6 @@ const handleAddProperty = async(req, res) =>{
             acre_lot,
             state,
             city,
-            image,
             images,
             prop_status,
             prop_type,
@@ -329,7 +354,7 @@ const handleGetAllProps = async(req, res) => {
     }
 }
 
-// get all property transactions
+// get all full payment property transactions
 const handleAllPropsTransaction = async(req, res)=>{
     try{
         const { id } = req.admin
@@ -341,7 +366,7 @@ const handleAllPropsTransaction = async(req, res)=>{
         }
 
         // query property transactions
-        const propsTransaction = await propertyTransactionModel.find().sort({ createdAt: -1 })
+        const propsTransaction = await propertyTransactionModel.find().sort({ createdAt: -1 }).populate('property_id')
 
         if(!propsTransaction){
             return res.status(400).json({ message: 'Error fetching transactions.' })
@@ -352,6 +377,36 @@ const handleAllPropsTransaction = async(req, res)=>{
         }
 
         return res.status(200).json({ message: 'Query successful', count: propsTransaction.length, propsTransaction })
+
+    }catch(error){
+        return res.status(500).json({ message: error.message })
+    }
+}
+
+// all installmental transaction 
+const handleInstallmentalTransaction = async(req, res)=>{
+    try{
+        const { id } = req.admin
+
+        const admin = await adminModel.findById(id)
+
+        if(!admin){
+            return res.status(400).json({ message: "No admin found." })
+        }
+
+        // query property transactions
+        const installmentalTransaction = await InstallmentalModel.find().sort({ createdAt: -1 })
+        .populate([{ path: 'property', select:['title']}, { path: '_by', select: ['firstname']}])
+
+        if(!installmentalTransaction){
+            return res.status(400).json({ message: 'Error fetching transactions.' })
+        }
+
+        if(!installmentalTransaction.length > 0){
+            return res.status(400).json({ message: 'No user has initiated any installmental transaction.' })
+        }
+
+        return res.status(200).json({ message: 'Query successful', count: installmentalTransaction.length, installmentalTransaction })
 
     }catch(error){
         return res.status(500).json({ message: error.message })
@@ -712,6 +767,82 @@ const handleApprovePurchase = async(req, res)=>{
     }
 }
 
+const handleTotalFullPayment = async(req, res)=>{
+    try {
+        const { id } = req.admin
+        const admin = await adminModel.findById(id)
+
+        if(!admin){
+            return res.status(400).json({ message: "Admin not found." })
+        }
+
+
+        // query full payment and perform calculation 
+        const fullPayment = await propertyTransactionModel.find()
+
+        if(!fullPayment){
+            return res.status(400).json({ message: "An error occured." })
+        }
+
+        if(fullPayment.length < 0){
+            return res.status(400).json({ message: "No transaction yet." })
+        }
+
+        let totlaPayment = fullPayment.reduce((current, payment)=>{
+            return total = Number(current) + Number(payment.amount)
+        },0)
+
+        return res.status(200).json({ message: "Total Amount of Full Payment made", totlaPayment })
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
+const handleTotalInstallmental = async(req, res)=>{
+    try {
+        const { id } = req.admin
+        const admin = await adminModel.findById(id)
+
+        if(!admin){
+            return res.status(400).json({ message: "Admin not found." })
+        }
+
+
+        // query full payment and perform calculation 
+        const installmentalPayment = await InstallmentalModel.find()
+
+        if(!installmentalPayment){
+            return res.status(400).json({ message: "An error occured." })
+        }
+
+        if(installmentalPayment.length < 0){
+            return res.status(400).json({ message: "No transaction yet." })
+        }
+
+        let totlaPayment = installmentalPayment.reduce((current, payment)=>{
+            return total = Number(current) + Number(payment.down_payment)
+        },0)
+
+        return res.status(200).json({ message: "Total Amount of Full Payment made", totlaPayment })
+
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
+
+const adminAcct = async(req, res) => {
+    try {
+        const { id } = req.admin
+        const update = await adminModel.findByIdAndUpdate(id,{
+            account_balance: 0
+        }, { new: true })
+        return res.status(200).json({ message: "success" })
+    } catch (error) {
+        return res.status(500).json({ message : error.message})
+    }
+}
 
 
 module.exports = {
@@ -732,5 +863,9 @@ module.exports = {
     handleDeleteAllPropsTransaction,
     handleCancelPurchase,
     handleApprovePurchase,
-    adminDashboard
+    adminDashboard,
+    handleInstallmentalTransaction,
+    adminAcct,
+    handleTotalFullPayment,
+    handleTotalInstallmental
 }

@@ -2,13 +2,16 @@ const express = require('express')
 const { Authorization } = require('../../middlewares/authorization')
 const {
     handleWallet,
-    handleWalletAction
+    handleFundWallet,
+    handleWithdrawal
 } = require('../../controllers/wallet/walletCtrl')
 
 const Router = express.Router()
 
-Router.get("/wallet", Authorization, handleWallet)
+Router.get("/", Authorization, handleWallet)
 
-Router.patch("/wallet/:params", Authorization, handleWalletAction)
+Router.patch("/fund", Authorization, handleFundWallet)
+
+Router.patch("/withdraw", Authorization, handleWithdrawal)
 
 module.exports = Router

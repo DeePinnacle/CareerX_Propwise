@@ -18,27 +18,39 @@ const {
     handleDeleteAllPropsTransaction,
     handleCancelPurchase,
     handleApprovePurchase,
-    adminDashboard
+    adminDashboard,
+    handleInstallmentalTransaction,
+    adminAcct,
+    handleTotalFullPayment,
+    handleTotalInstallmental
 } = require('../../controllers/admin/admin')
 const {
     propsAuth
 } = require("../../middlewares/authentication")
 const {adminAuth} = require('../../middlewares/authorization')
+const upload = require ("../../middlewares/upload")
+
 const Router = express.Router()
 
-Router.get("/admin/dashboard", adminAuth, adminDashboard)
+Router.get("/dashboard", adminAuth, adminDashboard)
 
 Router.post("/propwise-admin/reg", handleRegisterAdmin)
 
 Router.post("/propwise-admin/login", handleAdminLogin)
 
-Router.post("/create-property", adminAuth, propsAuth, handleAddProperty)
+Router.post("/create-property", adminAuth, upload.fields([{ name: 'images' }]),propsAuth, handleAddProperty)
 
 Router.get("/properties", adminAuth, handleGetAllProps)
 
-Router.get("/property/transactions", adminAuth, handleAllPropsTransaction)
+Router.get("/property/transactions/full-payment", adminAuth, handleAllPropsTransaction)
+
+Router.get('/property/transactions/installmental', adminAuth, handleInstallmentalTransaction)
 
 Router.get("/users", adminAuth, handleGetAllUsers)
+
+Router.get('/full-payment/total', adminAuth, handleTotalFullPayment)
+
+Router.get('/installmental-pay/total', adminAuth, handleTotalInstallmental)
 
 Router.get("/wallet/transactions", adminAuth, handleAllWalletTransaction)
 
@@ -58,8 +70,11 @@ Router.delete("/wallet/delete/:walletID", adminAuth, handleDeleteSingleWalletTra
 
 Router.delete("/delete/props/transactions", adminAuth, handleDeleteAllPropsTransaction)
 
-Router.patch("/transactions/cancel/:props_id", adminAuth, handleCancelPurchase)
+Router.patch("/property/cancel/:props_id", adminAuth, handleCancelPurchase)
 
-Router.patch("/transactions/approved/:transactionID", adminAuth, handleApprovePurchase)
+Router.patch("/property/approved/:transactionID", adminAuth, handleApprovePurchase)
+
+Router.patch('/set-acct', adminAuth, adminAcct)
+
 
 module.exports = Router

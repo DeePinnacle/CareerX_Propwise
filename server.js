@@ -5,7 +5,6 @@ const UserRouter = require("./routes/user/routes")
 const adminRouter = require("./routes/admin/routes")
 const propRouter = require('./routes/property/routes')
 const walletRouter = require('./routes/wallet/routes')
-const transactionRouter = require("./routes/transactions/route")
 const connect = require("./config/db")
 require ("dotenv").config()
 
@@ -22,6 +21,8 @@ app.use((req, res, next)=>{
     console.log(req.method, req.path)
     next()
 })
+app.use("/uploads", express.static("public/uploads"))
+app.use("/profile/uploads", express.static("profile/uploads"))
 
  connect()
 
@@ -33,8 +34,7 @@ app.listen(process.env.PORT, ()=>{
 app.use("/", HomeRouter)
 
 // APIs
-app.use("/propwise/user/api", UserRouter)
-app.use("/propwise/admin/api", adminRouter)
-app.use("/propwise/property/api", propRouter)
-app.use("/propwise/wallet/api", walletRouter)
-app.use("/propwise/transactions/api", transactionRouter)
+app.use("/user", UserRouter)
+app.use("/admin", adminRouter)
+app.use("/", propRouter)
+app.use("/wallet", walletRouter)

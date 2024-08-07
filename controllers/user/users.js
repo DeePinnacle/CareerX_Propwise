@@ -9,6 +9,11 @@ const {
     resetPass
 } = require('../../view/body')
 
+const {
+    propertyTransactionModel,
+    InstallmentalModel
+} = require('../../model/propsTransactionSchema')
+
 const mailer = require("../../utilities/mailer")
 const { generateAccountNumber } = require('../../utilities/utils')
 
@@ -28,9 +33,6 @@ const handleRegistration = async (req, res) => {
 
         // query database
         const existEmail = await userModel.findOne({ email })
-
-        // check if account number already exist 
-
 
         //check if email exists
         if(existEmail){
@@ -189,7 +191,7 @@ const handleLogin = async (req, res) => {
             email: user.email
         }
         // sign payload 
-        const token = jwt.sign(payload, process.env.ACCESS_TOKEN, { expiresIn: "5d"})
+        const token = jwt.sign(payload, process.env.ACCESS_TOKEN, { expiresIn: "30d"})
 
         // set res cookie
         res.cookie('token', token, { httpOnly: true, maxAge: 3600 })
@@ -243,6 +245,7 @@ const handleUserDetails = async(req, res) =>{
 const handleEditRecords = async(req, res)=>{
     
     const { firstname, lastname, password, email, phonenumber } = req.body
+    const { profile_pics } = req.file
     const { id } = req.user
 
     try{
@@ -259,7 +262,8 @@ const handleEditRecords = async(req, res)=>{
                 lastname,
                 password,
                 email,
-                phonenumber
+                phonenumber,
+                profile_pics
             },
             {
                 new: true
@@ -327,6 +331,7 @@ const handleForgotPassword = async (req, res) => {
         // assign a token 
 
         const token = jwt.sign(payloads, process.env.ACCESS_TOKEN, { expiresIn: '20m' })
+        res.cookie("token", token, { httpOnly: true, maxAge: 3600})
 
         // send mail
         const subject = "Reset Password"
@@ -358,7 +363,6 @@ const handleResetPassword = async(req, res) => {
         if(!decode){
             return res.status(400).json({ message: 'An error occurred' })
         }
-
 
         const user = await userModel.findById(id)
 
@@ -484,6 +488,65 @@ const handleLogout = async(req, res) => {
     return res.status(200).json({ message: 'Successfully logged out.'})
 }
 
+// get all full payment property transactions
+const handleAllPropsTransaction = async(req, res)=>{
+    try{
+        const { id } = req.user
+
+        const user = await userModel.findById(id)
+
+        if(!user){
+            return res.status(400).json({ message: "No user found." })
+        }
+
+        // query property transactions
+        const propsTransaction = await propertyTransactionModel.find().sort({ createdAt: -1 }).populate('property_id')
+
+        if(!propsTransaction){
+            return res.status(400).json({ message: 'Error fetching transactions.' })
+        }
+
+        if(!propsTransaction.length > 0){
+            return res.status(400).json({ message: 'No full payment transaction initiated yet.' })
+        }
+
+        return res.status(200).json({ message: 'Query successful', count: propsTransaction.length, propsTransaction })
+
+    }catch(error){
+        return res.status(500).json({ message: error.message })
+    }
+}
+
+// all installmental transaction 
+const handleInstallmentalTransaction = async(req, res)=>{
+    try{
+        const { id } = req.user
+
+        const user = await userModel.findById(id)
+
+        if(!user){
+            return res.status(400).json({ message: "No admin found." })
+        }
+
+        // query property transactions
+        const installmentalTransaction = await InstallmentalModel.find().sort({ createdAt: -1 })
+        .populate([{ path: 'property', select:['title']}, { path: '_by', select: ['firstname']}])
+
+        if(!installmentalTransaction){
+            return res.status(400).json({ message: 'Error fetching transactions.' })
+        }
+
+        if(!installmentalTransaction.length > 0){
+            return res.status(400).json({ message: 'No installmental payment initiated yet.' })
+        }
+
+        return res.status(200).json({ message: 'Query successful', count: installmentalTransaction.length, installmentalTransaction })
+
+    }catch(error){
+        return res.status(500).json({ message: error.message })
+    }
+}
+
 module.exports = {
     handleRegistration,
     handleVerification,
@@ -495,5 +558,7 @@ module.exports = {
     handleResetPassword,
     handleDeactivateAcct,
     handleReactivateAcct,
-    handleLogout
+    handleLogout,
+    handleAllPropsTransaction,
+    handleInstallmentalTransaction
 }

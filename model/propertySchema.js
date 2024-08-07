@@ -54,10 +54,6 @@ const propertySchema = new Schema({
         ],
         required: true
     },
-    features: {
-        type: String,
-        required: true
-    },
     bedrooms: {
         type: Number,
         required: false
@@ -70,13 +66,9 @@ const propertySchema = new Schema({
         type: Number,
         required: false
     },
-    image: {
-        type: String,
-        required: false
-    },
     images: {
-        type: [String],
-        required: false
+        type: Array,
+        required: true
     }
 
 }, { timestamps: true })
