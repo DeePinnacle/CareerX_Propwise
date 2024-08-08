@@ -14,7 +14,7 @@ const SENDER_MAIL = process.env.SENDER_MAIL
 const mailer = async (email, subject, body) => {
 
     try{
-        let logoPath = path.join(__dirname, 'public', 'img', 'logo.png')
+        let logoPath = path.join(__dirname, 'public', 'img', 'Logo.png')
 
         let transporter = nodemailer.createTransport({
             service: "gmail",
@@ -31,7 +31,7 @@ const mailer = async (email, subject, body) => {
             html: body,
             attachments: [
                 {
-                    filename: 'logo.png',
+                    filename: 'Logo.png',
                     path: logoPath,
                     cid: 'logoImage'
                 }
