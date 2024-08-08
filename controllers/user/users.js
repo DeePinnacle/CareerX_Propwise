@@ -79,15 +79,15 @@ const handleRegistration = async (req, res) => {
         res.cookie("token", token, { httpOnly: true, maxAge: 3600 })
 
         // set user link to verify mail 
-        const link = `http://localhost/user/api/verify-account/${token}`
+        const link = `https://propwise.onrender.com/user/verify-account/${token}`
 
         const subject = 'Verify email account'
 
-        let body = verifyAccount(email, link)
+        let body = verifyAccount(firstname, link)
 
         await mailer( email, subject, body )
 
-        return res.status(200).json({ message: "Account created successful, Check your mail to verify your account.", user, link, token })
+        return res.status(200).json({ message: "Account created successful, a verification link has been sent to your mail", user, link, token })
     }catch(err){
         return res.status(500).json({ message: err.message })
     }
