@@ -47,7 +47,7 @@ const verifyAccount = (firstname, link) => {
                 box-sizing: border-box;
                 border-radius: 6px;
                 ">
-                    <a href="#" style="
+                    <a href='${ link }' style="
                     display: block;
                     text-decoration: none;
                     color: white;

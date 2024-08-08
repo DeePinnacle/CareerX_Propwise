@@ -28,7 +28,7 @@ const mailer = async (email, subject, body) => {
             to: email,
             subject: subject,
             html: body,
-            attachment: [
+            attachments: [
                 {
                     filename: 'logo.png',
                     path: path.join(__dirname, './logo.png'),
