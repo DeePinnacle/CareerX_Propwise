@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer')
+const path = require('path')
+const fs = require('fs')
 
 require ('dotenv').config()
 
@@ -25,7 +27,14 @@ const mailer = async (email, subject, body) => {
             from: SENDER_MAIL,
             to: email,
             subject: subject,
-            html: body
+            html: body,
+            attachment: [
+                {
+                    filename: 'logo.png',
+                    path: path.join(__dirname, './logo.png'),
+                    cid: 'logoImage'
+                }
+            ]
         }
 
         await transporter.sendMail(mailerInfo)

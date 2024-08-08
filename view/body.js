@@ -27,7 +27,7 @@ const verifyAccount = (firstname, link) => {
             box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.2);
             ">
                 <div style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
-                    <image src="./Logo.png" style="width: 50px; height: 20px; display: block; margin: 0px auto;" />
+                    <image src="cid:logoImage" alt="propwise-logo" style="width: 50px; height: 20px; display: block; margin: 0px auto;" />
                     <h2 style="color: #E45122; margin-right: 500px; font-family: 'Times New Roman', Times, serif;">Propwise</h2>
                 </div>
                 <div style="width: 100%; min-height: 20px; background-color: #E45122; border-radius: 4px; padding: 10px; box-sizing: border-box;">
