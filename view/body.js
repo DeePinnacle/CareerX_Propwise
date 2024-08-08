@@ -1,13 +1,17 @@
 const verifyAccount = (firstname, link) => {
     return (
         `
-    <div id='container' style='
-        background-color: white;
-        width: 100%;
-        min-height: 100vh;
-    '>
+        <!DOCTYPE html>
+<html lang="en">
 
-            <div id='container' style='
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>confrim mail body</title>
+</head>
+
+<body style="margin: 0;">
+    <div id='container' style='
         background-color: white;
         width: 100%;
         min-height: 100vh;
@@ -48,19 +52,22 @@ const verifyAccount = (firstname, link) => {
                     text-decoration: none;
                     color: white;
                     text-align: center;
-                    font-family: cursive;
+                    font-family: 'Times New Roman', Times, serif;
                 ">verify account</a>
                 </div>
                 <p style="margin: 24px 0px; color: black ; font-size: 1.2rem; font-family: 'Times New Roman', Times, serif;">
                     If you did not create this account, please disregard this email. If you encounter any issues or need assistance, feel free to contact our support team at <span style="color: #E45122">krakenteam@propwise.co</span>.
                 </p>
                 <hr />
-                <p style="font-family: cursive;">Thank you for joining us!</p>
-                <p style="font-family: cursive;">Best regards,<br />
+                <p style="font-family: 'Times New Roman', Times, serif;">Thank you for joining us!</p>
+                <p style="font-family: 'Times New Roman', Times, serif;">Best regards,<br />
                 The Kraken Team</p>
 
             </div>
         </div>
+</body>
+
+</html>
 
         `
     )
