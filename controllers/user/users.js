@@ -330,13 +330,13 @@ const handleForgotPassword = async (req, res) => {
 
         // assign a token 
 
-        const token = jwt.sign(payloads, process.env.ACCESS_TOKEN, { expiresIn: '20m' })
+        const token = jwt.sign(payloads, process.env.ACCESS_TOKEN, { expiresIn: '30m' })
         res.cookie("token", token, { httpOnly: true, maxAge: 3600})
 
         // send mail
         const subject = "Reset Password"
 
-        const resetPassLink = `http://localhost:5000/finance-tracker/api/reset-password/${ token }`
+        const resetPassLink = `https://propwise.onrender.com/user/reset-password/${ token }`
 
         let body = resetPass(user.firstname, resetPassLink)
 
