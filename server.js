@@ -7,13 +7,18 @@ const propRouter = require('./routes/property/routes')
 const walletRouter = require('./routes/wallet/routes')
 const connect = require("./config/db")
 require ("dotenv").config()
+const cookieParser = require('cookie-parser')
 
 const app = express()
 
 const PORT = process.env.PORT || 8000
 
 // register middlewares
-app.use(cors())
+app.use(cookieParser())
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    credentials: true
+}))
 
 app.use(express.json())
 

@@ -76,7 +76,7 @@ const handleRegistration = async (req, res) => {
 
         const token = jwt.sign(payload, process.env.ACCESS_TOKEN, { expiresIn: "30m" })
         // set res cookie
-        res.cookie("token", token, { httpOnly: true, maxAge: 3600 })
+        res.cookie("token", token, { httpOnly: true, secure: true, sameSite:'Strict', maxAge: 3600000 })
 
         // set user link to verify mail 
         const link = `https://propwise.onrender.com/user/verify-account/${token}`
