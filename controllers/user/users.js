@@ -303,7 +303,7 @@ const handleForgotPassword = async (req, res) => {
         const user = await userModel.findOne({ email })
 
         if(!user){
-            return res.status(200).json({ message: 'No such email found' })
+            return res.status(400).json({ message: 'No such email found' })
         }
 
         if(user.verified === false){

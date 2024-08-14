@@ -75,7 +75,7 @@ const handleFundWallet = async(req, res) => {
         let balance = user.account_balance
 
         // add to user account balance 
-        balance += amount;
+        balance = Number(amount) + Number(balance);
 
         // update user balance
         const updateBalance = await userModel.findByIdAndUpdate(id, {
@@ -144,7 +144,7 @@ const handleWithdrawal = async(req, res) => {
         let balance = user.account_balance
 
         // add to user account balance 
-        balance -= amount;
+        balance = Number(balance) + Number(amount);
 
         // update user balance
         const updateBalance = await userModel.findByIdAndUpdate(id, {

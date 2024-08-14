@@ -68,7 +68,6 @@ const propertySchema = new Schema({
     },
     images: {
         type: Array,
-        required: true
     }
 
 }, { timestamps: true })
