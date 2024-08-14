@@ -212,22 +212,22 @@ const handleAddProperty = async(req, res) =>{
         } = req.body
         const { id } = req.admin
 
-        let { images } = req.files;
+        // let { images } = req.files;
         
-        if (req.files) {
-            let filename = "";
+        // if (req.files) {
+        //     let filename = "";
       
-            for (let image of images) {
-              filename += `${image.filename} ${","}`;
-            }
-            filename = filename.substring(0, filename.lastIndexOf(","));
-            images = filename;
-            console.log(images);
+        //     for (let image of images) {
+        //       filename += `${image.filename} ${","}`;
+        //     }
+        //     filename = filename.substring(0, filename.lastIndexOf(","));
+        //     images = filename;
+        //     console.log(images);
             
-          }else {
-            return res.status(400).json({ message: "No image file selected" })
-          }
-          console.log(images)
+        //   }else {
+        //     return res.status(400).json({ message: "No image file selected" })
+        //   }
+        //   console.log(images)
 
         if(!id){
             return res.status(400).json({ message: 'Access denied' })
@@ -240,7 +240,6 @@ const handleAddProperty = async(req, res) =>{
             acre_lot,
             state,
             city,
-            images,
             prop_status,
             prop_type,
             features,

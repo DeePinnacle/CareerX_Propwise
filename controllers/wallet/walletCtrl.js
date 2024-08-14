@@ -144,7 +144,7 @@ const handleWithdrawal = async(req, res) => {
         let balance = user.account_balance
 
         // add to user account balance 
-        balance = Number(balance) + Number(amount);
+        balance = Number(balance) - Number(amount);
 
         // update user balance
         const updateBalance = await userModel.findByIdAndUpdate(id, {
