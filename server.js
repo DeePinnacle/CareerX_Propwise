@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 8000
 app.use(cookieParser())
 
 app.use(cors({
-    origin: ['https://propwise-frontend.vercel.app'],
+    origin: ['https://prop-ashy.vercel.app'],
     methods: ['GET', 'POST', 'OPTIONS', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
