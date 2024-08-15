@@ -15,8 +15,9 @@ const PORT = process.env.PORT || 8000
 
 // register middlewares
 app.use(cookieParser())
+
 app.use(cors({
-    origin: ['https://prop-ashy.vercel.app'],
+    origin: ['https://propwise-frontend.vercel.app'],
     methods: ['GET', 'POST', 'OPTIONS', 'PATCH', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
