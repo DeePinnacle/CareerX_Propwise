@@ -31,6 +31,10 @@ const propertySchema = new Schema({
         type: String,
         required: true
     },
+    features: {
+      type: String,
+        required: true
+    },
     city: {
         type: String,
         required: true
